@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OFFER-COMPARE 城市生活成本对比</title>
+  <style>
+    :root {
+      --bg: #f6f8fc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #3b82f6;
+      --primary-soft: #dbeafe;
+      --border: #e5e7eb;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 28%);
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 28px auto 48px;
+      padding: 0 16px;
+    }
+
+    .hero {
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      color: #1d4ed8;
+      background: var(--primary-soft);
+      border-radius: 999px;
+      padding: 5px 10px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.3;
+    }
+
+    .desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .two-cols {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    .card.calculating {
+      opacity: .78;
+      filter: saturate(.95);
+    }
+
+    .card h3 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 0 12px;
+      font-size: 14px;
+      background: #fff;
+      color: var(--text);
+      outline: none;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .btn {
+      width: 100%;
+      height: 42px;
+      border: 0;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      filter: brightness(1.03);
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: .85;
+    }
+
+    .meta {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status {
+      margin-top: 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      padding: 10px 12px;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .status.info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .btn-inline {
+      margin-left: 8px;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      border-radius: 8px;
+      font-size: 12px;
+      height: 28px;
+      padding: 0 10px;
+      cursor: pointer;
+    }
+
+    .switch-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      background: #fcfdff;
+    }
+
+    .switch-wrap span {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #d1d5db;
+      transition: .2s;
+      border-radius: 999px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      top: 3px;
+      background: white;
+      transition: .2s;
+      border-radius: 999px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+    }
+
+    .switch input:checked + .slider {
+      background: #3b82f6;
+    }
+
+    .switch input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .metric {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      background: #fcfdff;
+    }
+
+    .metric .k {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .metric .v {
+      margin-top: 5px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .good { color: var(--ok); }
+    .mid { color: var(--warn); }
+    .bad { color: var(--danger); }
+
+    .section-title {
+      margin: 14px 0 8px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      background: #f9fafb;
+      margin-bottom: 7px;
+    }
+
+    .line strong {
+      font-size: 14px;
+    }
+
+    .insight-card {
+      margin-top: 14px;
+      border: 1px solid #dbeafe;
+      background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+    }
+
+    .insight-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .insight-item {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #fff;
+    }
+
+    .insight-item h4 {
+      margin: 0 0 6px;
+      font-size: 13px;
+    }
+
+    .insight-item p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.65;
+      color: #334155;
+    }
+
+    .warning {
+      color: #b91c1c !important;
+    }
+
+    .stress-warning {
+      margin: 8px 0;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid #fcd34d;
+      background: #fef9c3;
+      color: #854d0e;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .decision-grid {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .decision-col {
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff;
+    }
+
+    .decision-col h5 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      color: #1e3a8a;
+    }
+
+    .weight-item {
+      margin-bottom: 8px;
+    }
+
+    .weight-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+
+    .weight-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .weight-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      transition: width .28s ease;
+    }
+
+    .weight-fill.money { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+    .weight-fill.time { background: linear-gradient(90deg, #22d3ee, #06b6d4); }
+    .weight-fill.live { background: linear-gradient(90deg, #34d399, #10b981); }
+    .weight-fill.career { background: linear-gradient(90deg, #f59e0b, #f97316); }
+
+    .score-row {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+
+    .score-number {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1d4ed8;
+    }
+
+    .progress {
+      margin-top: 8px;
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #60a5fa, #2563eb);
+      transition: width .25s ease-out;
+    }
+
+    .source {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .source a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    @media (max-width: 760px) {
+      h1 { font-size: 24px; }
+      .two-cols,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <span class="badge">OFFER-COMPARE</span>
+      <h1>城市生活成本对比工具</h1>
+      <p class="desc">
+        帮助应届生更直观地比较不同城市 offer 的真实购买力：看月成本、看可支配、看等价薪资。
+      </p>
+    </section>
+
+    <section class="grid two-cols">
+      <article class="card">
+        <h3>城市 A（你的当前选项）</h3>
+        <div class="field">
+          <label for="cityA">城市</label>
+          <select id="cityA" class="select"></select>
+        </div>
+        <div class="field">
+          <label for="salaryA">税前月薪（元）</label>
+          <input id="salaryA" class="input" type="number" min="0" step="500" value="22000" />
+        </div>
+        <div class="switch-wrap">
+          <span>大厂背书（履历溢价）</span>
+          <label class="switch">
+            <input id="brandA" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="field">
+          <label for="workModeA">工作制</label>
+          <select id="workModeA" class="select">
+            <option value="955">955（每周 40h）</option>
+            <option value="996">996（每周 72h）</option>
+            <option value="bigsmall">大小周（每周 60h）</option>
+          </select>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>城市 B（你想对比的选项）</h3>
+        <div class="field">
+          <label for="cityB">城市</label>
+          <select id="cityB" class="select"></select>
+        </div>
+        <div class="field">
+          <label for="salaryB">税前月薪（元）</label>
+          <input id="salaryB" class="input" type="number" min="0" step="500" value="18000" />
+        </div>
+        <div class="switch-wrap">
+          <span>大厂背书（履历溢价）</span>
+          <label class="switch">
+            <input id="brandB" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="field">
+          <label for="workModeB">工作制</label>
+          <select id="workModeB" class="select">
+            <option value="955">955（每周 40h）</option>
+            <option value="996">996（每周 72h）</option>
+            <option value="bigsmall">大小周（每周 60h）</option>
+          </select>
+        </div>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top: 14px;">
+      <button id="compareBtn" class="btn">开始对比</button>
+      <p class="meta">提示：默认按“一室公寓 + 外卖 + 通勤 + 购物 + 水电网”估算月成本。</p>
+      <p id="updatedAt" class="meta">数据最后更新时间：2026-04-20</p>
+      <div id="loadStatus" class="status info hidden"></div>
+      <div id="loadError" class="status error hidden">
+        城市数据加载失败，请检查网络或稍后重试。
+        <button id="retryBtn" class="btn-inline" type="button">重试</button>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <div class="k">城市 A 可支配</div>
+          <div class="v" id="leftDisposable">-</div>
+        </div>
+        <div class="metric">
+          <div class="k">城市 B 可支配</div>
+          <div class="v" id="rightDisposable">-</div>
+        </div>
+        <div class="metric">
+          <div class="k">结论</div>
+          <div class="v" id="winnerText">-</div>
+        </div>
+      </div>
+
+      <h4 class="section-title">等价薪资换算（核心）</h4>
+      <div class="line">
+        <span id="eqTextAtoB">-</span>
+        <strong id="eqValueAtoB">-</strong>
+      </div>
+      <div class="line">
+        <span id="eqTextBtoA">-</span>
+        <strong id="eqValueBtoA">-</strong>
+      </div>
+    </section>
+
+    <section class="card insight-card">
+      <div class="insight-title">✨ PM 深度洞察</div>
+      <div id="stressWarning" class="stress-warning hidden"></div>
+      <div class="insight-item">
+        <h4>维度 A：购买力评价（PPP）</h4>
+        <p id="insightPPP">-</p>
+      </div>
+      <div class="insight-item">
+        <h4>维度 B：风险 / 时薪警示</h4>
+        <p id="insightRisk">-</p>
+      </div>
+      <div class="insight-item">
+        <h4>维度 C：综合幸福指数</h4>
+        <div class="score-row">
+          <span>城市 A：<strong id="scoreLabelA">-</strong></span>
+          <span class="score-number" id="scoreA">-</span>
+        </div>
+        <div class="progress"><div id="scoreBarA" class="progress-bar"></div></div>
+        <div class="score-row">
+          <span>城市 B：<strong id="scoreLabelB">-</strong></span>
+          <span class="score-number" id="scoreB">-</span>
+        </div>
+        <div class="progress"><div id="scoreBarB" class="progress-bar"></div></div>
+      </div>
+      <div class="insight-item">
+        <h4>维度 D：决策天平（当下 vs 未来）</h4>
+        <div class="decision-grid">
+          <div class="decision-col">
+            <h5 id="weightsTitleA">城市 A</h5>
+            <div class="weight-item">
+              <div class="weight-head"><span>现金流安全（40%）</span><strong id="moneyScoreA">-</strong></div>
+              <div class="weight-track"><div id="moneyBarA" class="weight-fill money"></div></div>
+            </div>
+            <div class="weight-item">
+              <div class="weight-head"><span>时间自由（25%）</span><strong id="timeScoreA">-</strong></div>
+              <div class="weight-track"><div id="timeBarA" class="weight-fill time"></div></div>
+            </div>
+            <div class="weight-item">
+              <div class="weight-head"><span>居住尊严（20%）</span><strong id="liveScoreA">-</strong></div>
+              <div class="weight-track"><div id="liveBarA" class="weight-fill live"></div></div>
+            </div>
+            <div class="weight-item">
+              <div class="weight-head"><span>职业跳板（15%）</span><strong id="careerScoreA">-</strong></div>
+              <div class="weight-track"><div id="careerBarA" class="weight-fill career"></div></div>
+            </div>
+          </div>
+          <div class="decision-col">
+            <h5 id="weightsTitleB">城市 B</h5>
+            <div class="weight-item">
+              <div class="weight-head"><span>现金流安全（40%）</span><strong id="moneyScoreB">-</strong></div>
+              <div class="weight-track"><div id="moneyBarB" class="weight-fill money"></div></div>
+            </div>
+            <div class="weight-item">
+              <div class="weight-head"><span>时间自由（25%）</span><strong id="timeScoreB">-</strong></div>
+              <div class="weight-track"><div id="timeBarB" class="weight-fill time"></div></div>
+            </div>
+            <div class="weight-item">
+              <div class="weight-head"><span>居住尊严（20%）</span><strong id="liveScoreB">-</strong></div>
+              <div class="weight-track"><div id="liveBarB" class="weight-fill live"></div></div>
+            </div>
+            <div class="weight-item">
+              <div class="weight-head"><span>职业跳板（15%）</span><strong id="careerScoreB">-</strong></div>
+              <div class="weight-track"><div id="careerBarB" class="weight-fill career"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid two-cols" style="margin-top: 14px;">
+      <article class="card">
+        <h3 id="detailTitleA">城市 A 成本拆解</h3>
+        <div id="detailA"></div>
+      </article>
+      <article class="card">
+        <h3 id="detailTitleB">城市 B 成本拆解</h3>
+        <div id="detailB"></div>
+      </article>
+    </section>
+
+    <p class="source">
+      数据源参考：
+      <a href="https://www.numbeo.com/" target="_blank" rel="noreferrer">Numbeo</a>
+      （当前为 DEMO 数据，后续可接入 API 或定时更新）。
+    </p>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

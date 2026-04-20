@@ -1,0 +1,10 @@
+{
+  "广州": { "rent": 4085, "food": 2200, "transport": 520, "shopping": 900, "utility": 460 },
+  "深圳": { "rent": 4890, "food": 2450, "transport": 640, "shopping": 1100, "utility": 540 },
+  "新加坡": { "rent": 18317, "food": 4200, "transport": 880, "shopping": 2100, "utility": 1200 },
+  "香港": { "rent": 14848, "food": 3600, "transport": 760, "shopping": 1800, "utility": 980 },
+  "东京": { "rent": 7857, "food": 2800, "transport": 900, "shopping": 1200, "utility": 760 },
+  "北京": { "rent": 7495, "food": 2600, "transport": 650, "shopping": 1300, "utility": 650 },
+  "杭州": { "rent": 5600, "food": 2300, "transport": 560, "shopping": 1050, "utility": 520 },
+  "上海": { "rent": 8200, "food": 2900, "transport": 700, "shopping": 1500, "utility": 730 }
+}
