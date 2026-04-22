@@ -1,5 +1,5 @@
 const STORAGE_KEY = "offer-compare:last-state"
-const CITIES_DATA_URL = "/cities.json"
+const CITIES_DATA_URL = "./cities.json"
 const formatter = new Intl.NumberFormat("zh-CN")
 const SCORE_WARN_THRESHOLD = 40
 const WORK_HOURS_MAP = {
@@ -175,7 +175,10 @@ function getDefaultSelection(cities) {
 async function loadCityCostData() {
   showStatus("正在加载城市数据...")
   showLoadError(false)
-  const response = await fetch(CITIES_DATA_URL)
+  const response = await fetch(CITIES_DATA_URL).catch((error) => {
+    console.error(`[DataLoad] Request failed for ${CITIES_DATA_URL}:`, error)
+    throw error
+  })
   if (!response.ok) {
     throw new Error(`failed to load data: ${response.status}`)
   }

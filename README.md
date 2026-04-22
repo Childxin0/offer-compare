@@ -89,5 +89,5 @@ npm run dev
 ## 数据说明
 
 - 城市成本数据来源参考：[Numbeo](https://www.numbeo.com/)
-- 当前使用 `cities.json` 作为 DEMO 数据源，后续可扩展为 API 拉取与定时更新。
+- 当前使用 `public/cities.json` 作为 DEMO 数据源，后续可扩展为 API 拉取与定时更新。
 
