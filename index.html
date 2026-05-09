@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OFFER-COMPARE 城市生活成本对比</title>
+  <title>Offer Decision Copilot · AI PM 决策辅助系统</title>
   <style>
     :root {
       --bg: #f6f8fc;
@@ -31,7 +31,7 @@
     }
 
     .app {
-      max-width: 980px;
+      max-width: 1080px;
       margin: 28px auto 48px;
       padding: 0 16px;
     }
@@ -439,6 +439,243 @@
       text-decoration: none;
     }
 
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .ai-copilot-card {
+      border: 1px solid #c7d2fe;
+      background: linear-gradient(180deg, #f8fafc 0%, #ffffff 55%);
+    }
+
+    .ai-copilot-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .ai-pill {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #312e81;
+      background: #e0e7ff;
+      border-radius: 999px;
+      padding: 4px 10px;
+    }
+
+    .ai-lead {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.65;
+    }
+
+    .ai-section-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: #ffffff;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+    }
+
+    .ai-section-head {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .ai-section-body {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.75;
+      color: #334155;
+      white-space: pre-wrap;
+    }
+
+    .ai-fallback-banner {
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #fde68a;
+      background: #fffbeb;
+      color: #92400e;
+      font-size: 13px;
+    }
+
+    .tradeoff-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tradeoff-legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 10px 0 6px;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .legend-a { background: #2563eb; }
+    .legend-b { background: #7c3aed; }
+
+    .radar-wrap {
+      position: relative;
+      margin-top: 8px;
+      border-radius: 16px;
+      border: 1px dashed #cbd5e1;
+      background: #f8fafc;
+      padding: 12px;
+      overflow: visible;
+    }
+
+    .radar-unavailable {
+      filter: grayscale(0.08);
+    }
+
+    .tradeoff-unavailable .radar-wrap {
+      border-color: #fecaca;
+      background: #fff7ed;
+    }
+
+    #radarSvg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .radar-tooltip {
+      position: fixed;
+      z-index: 9999;
+      max-width: 280px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+      font-size: 12px;
+      color: #0f172a;
+      pointer-events: none;
+    }
+
+    .radar-tooltip div + div {
+      margin-top: 4px;
+      color: #475569;
+    }
+
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .meta-chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #dbeafe;
+    }
+
+    .meta-chip.alt {
+      background: #f5f3ff;
+      color: #5b21b6;
+      border-color: #ede9fe;
+    }
+
+    .ok-chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #bbf7d0;
+    }
+
+    .warn-chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #fff7ed;
+      color: #9a3412;
+      border: 1px solid #fed7aa;
+    }
+
+    .city-picker {
+      position: relative;
+      width: 100%;
+    }
+
+    .city-picker-panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      margin-top: 6px;
+      max-height: 280px;
+      overflow-y: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+    }
+
+    .city-picker-group-title {
+      position: sticky;
+      top: 0;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .city-picker-item {
+      width: 100%;
+      text-align: left;
+      padding: 10px 14px;
+      border: 0;
+      border-bottom: 1px solid #f1f5f9;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .city-picker-item:last-child {
+      border-bottom: 0;
+    }
+
+    .city-picker-item:hover,
+    .city-picker-item:focus-visible {
+      background: #eff6ff;
+      outline: none;
+    }
+
     @media (max-width: 760px) {
       h1 { font-size: 24px; }
       .two-cols,
@@ -451,10 +688,11 @@
 <body>
   <main class="app">
     <section class="hero">
-      <span class="badge">OFFER-COMPARE</span>
-      <h1>城市生活成本对比工具</h1>
+      <span class="badge">AI DECISION COPILOT（Demo）</span>
+      <h1>Offer Decision Copilot · 城市 Offer 决策辅助系统</h1>
       <p class="desc">
-        帮助应届生更直观地比较不同城市 offer 的真实购买力：看月成本、看可支配、看等价薪资。
+        不只是薪资计算器：把<strong>购买力、时间价值、居住体感、成长可能性</strong>放进同一套可解释模型里，
+        并用<strong>报告式解释 + Trade-off 可视化</strong>帮助你做取舍——而不是替你做唯一答案。
       </p>
     </section>
 
@@ -462,12 +700,33 @@
       <article class="card">
         <h3>城市 A（你的当前选项）</h3>
         <div class="field">
-          <label for="cityA">城市</label>
-          <select id="cityA" class="select"></select>
+          <label for="citySearchA">城市</label>
+          <div class="city-picker" id="wrapCityA">
+            <input type="hidden" id="cityA" />
+            <input type="text" id="citySearchA" class="input city-picker-input" placeholder="搜索：中文 / English / 拼音（如 hangzhou、hz）" autocomplete="off" />
+            <div class="city-picker-panel hidden" aria-label="城市列表"></div>
+          </div>
         </div>
         <div class="field">
           <label for="salaryA">税前月薪（元）</label>
           <input id="salaryA" class="input" type="number" min="0" step="500" value="22000" />
+          <p class="hint">若留空或无效输入，将自动使用默认月薪（见代码 fallbacks）。</p>
+        </div>
+        <div class="field">
+          <label for="rentA">月房租（元，可选）</label>
+          <input id="rentA" class="input" type="number" min="0" step="100" placeholder="留空则使用城市基准房租" />
+        </div>
+        <div class="field">
+          <label for="commuteA">月通勤支出（元，可选）</label>
+          <input id="commuteA" class="input" type="number" min="0" step="50" placeholder="留空则使用城市基准通勤" />
+        </div>
+        <div class="field">
+          <label for="growthA">成长空间（自评）</label>
+          <select id="growthA" class="select">
+            <option value="low">成长受限</option>
+            <option value="mid" selected>成长中等</option>
+            <option value="high">成长充足</option>
+          </select>
         </div>
         <div class="switch-wrap">
           <span>大厂背书（履历溢价）</span>
@@ -489,12 +748,33 @@
       <article class="card">
         <h3>城市 B（你想对比的选项）</h3>
         <div class="field">
-          <label for="cityB">城市</label>
-          <select id="cityB" class="select"></select>
+          <label for="citySearchB">城市</label>
+          <div class="city-picker" id="wrapCityB">
+            <input type="hidden" id="cityB" />
+            <input type="text" id="citySearchB" class="input city-picker-input" placeholder="搜索：中文 / English / 拼音（如 hangzhou、hz）" autocomplete="off" />
+            <div class="city-picker-panel hidden" aria-label="城市列表"></div>
+          </div>
         </div>
         <div class="field">
           <label for="salaryB">税前月薪（元）</label>
           <input id="salaryB" class="input" type="number" min="0" step="500" value="18000" />
+          <p class="hint">若留空或无效输入，将自动使用默认月薪。</p>
+        </div>
+        <div class="field">
+          <label for="rentB">月房租（元，可选）</label>
+          <input id="rentB" class="input" type="number" min="0" step="100" placeholder="留空则使用城市基准房租" />
+        </div>
+        <div class="field">
+          <label for="commuteB">月通勤支出（元，可选）</label>
+          <input id="commuteB" class="input" type="number" min="0" step="50" placeholder="留空则使用城市基准通勤" />
+        </div>
+        <div class="field">
+          <label for="growthB">成长空间（自评）</label>
+          <select id="growthB" class="select">
+            <option value="low">成长受限</option>
+            <option value="mid" selected>成长中等</option>
+            <option value="high">成长充足</option>
+          </select>
         </div>
         <div class="switch-wrap">
           <span>大厂背书（履历溢价）</span>
@@ -548,6 +828,41 @@
         <span id="eqTextBtoA">-</span>
         <strong id="eqValueBtoA">-</strong>
       </div>
+    </section>
+
+    <section class="card ai-copilot-card" style="margin-top: 14px;">
+      <div class="ai-copilot-head">
+        <div>
+          <span class="ai-pill">AI PM · Explainability</span>
+          <h3 style="margin: 8px 0 0; font-size: 18px;">AI 决策解释（结构化报告）</h3>
+        </div>
+      </div>
+      <p class="ai-lead">
+        基于你输入的城市、月薪、房租/通勤（可选）、工作时长结构（工作制）与成长空间自评，系统生成本地<strong>决策分析报告</strong>（非云端大模型）。
+        失败时自动降级为<strong>规则模板</strong>，确保始终可读、可复盘。
+      </p>
+      <div id="aiExplainBanner" class="ai-fallback-banner hidden"></div>
+      <div id="aiExplainBody"></div>
+    </section>
+
+    <section class="card" id="tradeoffCard" style="margin-top: 14px;">
+      <div class="tradeoff-head">
+        <div>
+          <span class="badge" style="margin-bottom:8px;">Trade-off Visualization</span>
+          <h3 style="margin: 0 0 6px;">Trade-off / 决策权衡（雷达图）</h3>
+          <p class="desc" style="margin: 0;">没有完美 Offer：下图对比<strong>高收入、时间自由、居住舒适、职业成长</strong>四维相对强弱（0–100）。</p>
+        </div>
+      </div>
+      <div class="tradeoff-legend">
+        <span><span class="legend-dot legend-a"></span>城市 A</span>
+        <span><span class="legend-dot legend-b"></span>城市 B（虚线边框）</span>
+      </div>
+      <p id="radarLegendNote" class="meta" style="margin-top: 0;"></p>
+      <div id="radarRoot" class="radar-wrap">
+        <div id="radarWarning" class="status error hidden" data-radar-warning></div>
+        <svg id="radarSvg" role="img" aria-label="四维取舍雷达图"></svg>
+      </div>
+      <div id="radarTooltip" class="radar-tooltip hidden"></div>
     </section>
 
     <section class="card insight-card">
